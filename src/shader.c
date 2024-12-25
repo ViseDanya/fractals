@@ -89,7 +89,7 @@ int readShader(char *fileName, GLchar **program)
         return 1;
     }
 
-    *program = malloc(sizeof(char) * fileSize);
+    *program = malloc(sizeof(char) * (fileSize+1));
 
     if (fseek(fp, 0L, SEEK_SET) != 0)
     {
@@ -97,11 +97,15 @@ int readShader(char *fileName, GLchar **program)
         return 1;
     }
 
-    fread(*program, sizeof(char), fileSize, fp);
+    size_t readSize = fread(*program, sizeof(char), fileSize, fp);
     if (ferror(fp) != 0)
     {
         perror("Error reading file!");
         return 1;
+    }
+    else
+    {
+        (*program)[readSize++] = '\0';
     }
     fclose(fp);
     return 0;
